@@ -1,0 +1,130 @@
+import java.util.Scanner;
+
+public class TicTacToe {
+
+    // Size of the board
+    private static final int SIZE = 3;
+    private char[][] board;
+    private char currentPlayer;
+
+    // Constructor to initialize the board and set the starting player
+    public TicTacToe() {
+        board = new char[SIZE][SIZE];
+        currentPlayer = 'X'; // X starts first
+        initializeBoard();
+    }
+
+    // Initialize the board with empty spaces
+    private void initializeBoard() {
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
+                board[i][j] = ' ';
+            }
+        }
+    }
+
+    // Print the board
+    public void printBoard() {
+        System.out.println("  0 1 2");
+        for (int i = 0; i < SIZE; i++) {
+            System.out.print(i + " ");
+            for (int j = 0; j < SIZE; j++) {
+                System.out.print(board[i][j]);
+                if (j < SIZE - 1) System.out.print("|");
+            }
+            System.out.println();
+            if (i < SIZE - 1) {
+                System.out.println("  -----");
+            }
+        }
+    }
+
+    // Check if the current player has won
+    private boolean checkWin() {
+        // Check rows and columns
+        for (int i = 0; i < SIZE; i++) {
+            if (checkRow(i) || checkColumn(i)) {
+                return true;
+            }
+        }
+        // Check diagonals
+        return checkDiagonal() || checkAntiDiagonal();
+    }
+
+    // Check a specific row for a win
+    private boolean checkRow(int row) {
+        char symbol = board[row][0];
+        return symbol != ' ' && symbol == board[row][1] && symbol == board[row][2];
+    }
+
+    // Check a specific column for a win
+    private boolean checkColumn(int col) {
+        char symbol = board[0][col];
+        return symbol != ' ' && symbol == board[1][col] && symbol == board[2][col];
+    }
+
+    // Check the main diagonal for a win
+    private boolean checkDiagonal() {
+        char symbol = board[0][0];
+        return symbol != ' ' && symbol == board[1][1] && symbol == board[2][2];
+    }
+
+    // Check the anti-diagonal for a win
+    private boolean checkAntiDiagonal() {
+        char symbol = board[0][2];
+        return symbol != ' ' && symbol == board[1][1] && symbol == board[2][0];
+    }
+
+    // Check if the board is full
+    private boolean isBoardFull() {
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
+                if (board[i][j] == ' ') {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    // Play the game
+    public void playGame() {
+        Scanner scanner = new Scanner(System.in);
+        boolean gameEnded = false;
+
+        while (!gameEnded) {
+            printBoard();
+            System.out.println("Player " + currentPlayer + "'s turn.");
+            System.out.print("Enter row (0, 1, 2): ");
+            int row = scanner.nextInt();
+            System.out.print("Enter column (0, 1, 2): ");
+            int col = scanner.nextInt();
+
+            if (row >= 0 && row < SIZE && col >= 0 && col < SIZE && board[row][col] == ' ') {
+                board[row][col] = currentPlayer;
+                if (checkWin()) {
+                    printBoard();
+                    System.out.println("Player " + currentPlayer + " wins!");
+                    gameEnded = true;
+                } else if (isBoardFull()) {
+                    printBoard();
+                    System.out.println("The game is a draw!");
+                    gameEnded = true;
+                } else {
+                    // Switch players
+                    currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
+                }
+            } else {
+                System.out.println("This move is not valid.");
+            }
+        }
+
+        scanner.close();
+    }
+
+    // Main method to start the game
+    public static void main(String[] args) {
+        TicTacToe game = new TicTacToe();
+        game.playGame();
+    }
+}
